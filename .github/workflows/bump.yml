@@ -1,0 +1,27 @@
+name: bump
+# Daily: if mimray has a newer release, update the manifest's version, url and
+# hash (taken from the release's SHA256SUMS) and commit it.
+on:
+  schedule: [{ cron: '17 */6 * * *' }]
+  workflow_dispatch:
+permissions: { contents: write }
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - env: { GH_TOKEN: '${{ github.token }}' }
+        run: |
+          set -eu
+          V=$(gh release view --repo mimzeslami/mimray --json tagName --jq .tagName | sed 's/^v//')
+          CUR=$(jq -r .version bucket/mimray.json)
+          [ "$V" = "$CUR" ] && { echo "up to date ($V)"; exit 0; }
+          F="mimray-$V-windows-x64.zip"
+          SHA=$(curl -fsSL "https://github.com/mimzeslami/mimray/releases/download/v$V/SHA256SUMS" | awk -v f="$F" '$2==f {print $1}')
+          echo "$SHA" | grep -Eq '^[0-9a-f]{64}$' || { echo "no hash for $V"; exit 1; }
+          jq --arg v "$V" --arg u "https://github.com/mimzeslami/mimray/releases/download/v$V/$F" --arg h "$SHA" \
+            '.version=$v | .architecture."64bit".url=$u | .architecture."64bit".hash=$h' bucket/mimray.json > m.json
+          mv m.json bucket/mimray.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "mimray $V" && git push

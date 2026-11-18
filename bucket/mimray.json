@@ -1,13 +1,13 @@
 {
-  "version": "0.5.5",
+  "version": "0.5.6",
   "description": "Simple, secure V2Ray-compatible VPN client (sing-box core)",
   "homepage": "https://github.com/mimzeslami/mimray",
   "license": "GPL-3.0-or-later",
   "notes": "Windows asks for permission (UAC) when you connect; the tunnel needs it.",
   "architecture": {
     "64bit": {
-      "url": "https://github.com/mimzeslami/mimray/releases/download/v0.5.5/mimray-0.5.5-windows-x64.zip",
-      "hash": "0e1848f122ff69ae4cdc450858ec4478be2caf377c084f428b7059c73ded217a"
+      "url": "https://github.com/mimzeslami/mimray/releases/download/v0.5.6/mimray-0.5.6-windows-x64.zip",
+      "hash": "53868d0d21d280dc61c319e94886c5587fd88fb91b5e0a318d9f986d1032a084"
     }
   },
   "bin": "mimray.exe",
